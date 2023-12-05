@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load omfilters %}
+
+{% block titulo %}Produtos | {% endblock %}
+
+{% block conteudo %}
+
+
+<h3 class="my-4 boder-bottom pb-1">Produtos</h3>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card-columns">
+
+            {% for produto in produtos %}
+
+            <div class="card shadow" style="width: 330px;">
+
+                {% if produto.imagem %}
+                <a href=" {{ produto.slug }}">
+                    <img class="card-img-top" src="{{ produto.imagem.url }}" alt="{{ produto.name }}"
+                        style="height: 250px;">
+                </a>
+                {% endif %}
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ produto.name }}</h5>
+                    <p class="card-text">{{ produto.des_curta }}</p>
+                    <div class="container product-price-block text-center">
+
+                        {% if produto.pre_marke_prom %}
+                        <span class="product-price">
+                            {{ produto.pre_marke_prom|preco_formatado }}
+                        </span>
+                        <span class="product-old-price text-muted">
+                            {{ produto.pre_marke|preco_formatado }}
+                        </span>
+                        {% else %}
+                        <span class="product-price">
+                            {{ produto.pre_marke|preco_formatado }}
+                        </span>
+                        {% endif %}
+
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-light-custom text-center">
+                    <a href="{{ produto.slug }}" class="btn btn-sm m-1 btn-block"
+                        style="background-color: #CD853F; border-color: #CD853F;">
+                        <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                        Comprar
+                    </a>
+                </div>
+            </div>
+
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col">
+        {% include 'parciais/_pagination.html' %}
+    </div>
+</div>
+
+{% endblock %}

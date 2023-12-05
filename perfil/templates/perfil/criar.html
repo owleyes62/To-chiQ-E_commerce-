@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block titulo %}Criar perfil | {% endblock %}
+
+{% block conteudo %}
+
+{{ userform|crispy }}
+
+{% endblock %}
