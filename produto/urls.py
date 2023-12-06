@@ -1,9 +1,10 @@
 from django.urls import path
 from . import views
 
-app_name = 'produto'
+app_name = 'produto' # Nome da aplição
 
-urlpatterns = [
+urlpatterns = [ # Mapeamento de URls
+    
     path('', views.ListaProdutos.as_view(), name="lista"),
     path('<slug>', views.DetalheProduto.as_view(), name="detalhe"),
     path('adicionaraocarrinho/', views.AdicionarAoCarrinho.as_view(),

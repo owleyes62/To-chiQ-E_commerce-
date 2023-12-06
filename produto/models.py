@@ -28,7 +28,7 @@ class Produto(models.Model):
     # Variavel de um campo que armazenara Strings(CharField) com um quantidade predefinida, 
     # que forneçera duas opções(choice) com uma sendo ja pré definida(Default) e com o quantidade especifica(max_length)
     
-    def image_tag_path(self):
+    def image_tag_path(self): # Define o tamanho da imagem ná área admin 
         return mark_safe('<img src= "%s" width="100" height="80"/>' % (self.imagem.url))
     
     def get_preco_formatado(self):    
@@ -65,16 +65,20 @@ class Produto(models.Model):
 
     
     def save(self, *args, **kwargs):
-    # Função de salvamento
+    # cria slug para o produto a partir do nome se o slug estiver vazio
+    # além de redimencionar a imagem do produto 
         
+        # verifica se o campo do slug está vazio
         if not self.slug:
+            # Cria um slug(slugify) a partir do nome do produto
             slug      = f'{slugify(self.name)}'
             self.slug = slug
 
-        super().save(*args, **kwargs)
+        super().save(*args, **kwargs) # Salva o slug criado na base de dados
 
-        max_image_size = 800
+        max_image_size = 800 # Define o tamanho máximo da imagem
 
+        # Redimendiona a imagem se existir
         if self.imagem:
             self.resize_image(self.imagem, max_image_size)
 

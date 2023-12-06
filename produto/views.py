@@ -21,25 +21,34 @@ class DetalheProduto(DetailView):
     slug_url_kwarg = 'slug' # Especifica o nome do argumento da URL que será usado para recuperar o objeto do modelo
 
 class AdicionarAoCarrinho(View):
-    # classe de visualização no django baseada em função, que adicionarar produtos ao carrinho
+    # Classe de visualização no Django baseada em função para adicionar produtos ao carrinho
+
     def get(self, *args, **kwargs):
+        # Método GET para processar a adição de produtos ao carrinho
+
+        # Obtém a URL de referência da solicitação
         http_referer = self.request.META.get(
             'HTTP_REFERER',
             reverse('produto:lista')
         )
+        
+        # Obtém o ID da variação do produto da solicitação GET
         variacao_id = self.request.GET.get('vid')
 
+        # Verifica se o ID da variação existe
         if not variacao_id:
             messages.error(
                 self.request,
-                'Não a esse produto no estoque'
+                'Não há esse produto no estoque'
             )
             return redirect(http_referer)
 
+        # Obtém a variação do produto com base no ID
         variacao = get_object_or_404(models.Variacao, id=variacao_id)
         variacao_estoque = variacao.estoque
         produto = variacao.produto
 
+        # Atribui valores às variáveis para facilitar o acesso
         produto_id = produto.id
         produto_nome = produto.name
         variacao_nome = variacao.nome or ''
@@ -49,11 +58,13 @@ class AdicionarAoCarrinho(View):
         slug = produto.slug
         imagem = produto.imagem
 
+        # Verifica se há imagem e atribui o nome da imagem
         if imagem:
             imagem = imagem.name
         else:
             imagem = ''
 
+        # Verifica se o estoque da variação é suficiente
         if variacao.estoque < 1:
             messages.error(
                 self.request,
@@ -61,16 +72,20 @@ class AdicionarAoCarrinho(View):
             )
             return redirect(http_referer)
 
+        # Verifica se a sessão do carrinho existe
         if not self.request.session.get('carrinho'):
             self.request.session['carrinho'] = {}
             self.request.session.save()
 
+        # Obtém o carrinho da sessão
         carrinho = self.request.session['carrinho']
 
+        # Verifica se a variação já está no carrinho
         if variacao_id in carrinho:
             quantidade_carrinho = carrinho[variacao_id]['quantidade']
             quantidade_carrinho += 1
 
+            # Verifica se o estoque é suficiente para a quantidade desejada
             if variacao_estoque < quantidade_carrinho:
                 messages.warning(
                     self.request,
@@ -80,12 +95,12 @@ class AdicionarAoCarrinho(View):
                 )
                 quantidade_carrinho = variacao_estoque
 
+            # Atualiza as informações no carrinho
             carrinho[variacao_id]['quantidade'] = quantidade_carrinho
-            carrinho[variacao_id]['preco_quantitativo'] = preco_unitario * \
-                quantidade_carrinho
-            carrinho[variacao_id]['preco_quantitativo_promocional'] = preco_unitario_promocional * \
-                quantidade_carrinho
+            carrinho[variacao_id]['preco_quantitativo'] = preco_unitario * quantidade_carrinho
+            carrinho[variacao_id]['preco_quantitativo_promocional'] = preco_unitario_promocional * quantidade_carrinho
         else:
+            # Adiciona uma nova entrada ao carrinho
             carrinho[variacao_id] = {
                 'produto_id': produto_id,
                 'produto_nome': produto_nome,
@@ -100,14 +115,17 @@ class AdicionarAoCarrinho(View):
                 'imagem': imagem,
             }
 
+        # Salva a sessão do carrinho
         self.request.session.save()
 
+        # Exibe mensagem de sucesso
         messages.success(
             self.request,
-            f'Produto {produto_nome} {variacao_nome} adicionado ao seu '
+            f'Produto {variacao_nome} adicionado ao seu '
             f'carrinho {carrinho[variacao_id]["quantidade"]}x.'
         )
 
+        # Redireciona de volta à página de referência
         return redirect(http_referer)
 
 
@@ -132,7 +150,7 @@ class RemoverDoCarrinho(View):
 
         messages.success(
             self.request,
-            f'Produto {carrinho["produto_nome"]} {carrinho["variacao_nome"]} '
+            f'Produto {carrinho["variacao_nome"]} '
             f'removido do seu carrinho.'
         )
 
