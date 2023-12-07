@@ -4,7 +4,6 @@ from . import views
 app_name = 'pedido' # Define o namespace  do aplicativo para envitar conflitos de nomeclatura
 
 urlpatterns = [
-# varial que armazena as definições padrão de URL para o endpoint
     path('pagar/<int:pk>', views.Pagar.as_view(), name='pagar'),
     path('salvarpedido/', views.SalvarPedido.as_view(), name='salvarpedido'),
     path('lista/', views.Lista.as_view(), name='lista'),

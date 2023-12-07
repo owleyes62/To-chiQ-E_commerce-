@@ -10,11 +10,9 @@ from utils.f_perfil import valida_cpf, valida_idade, valida_cep
 class Perfil(models.Model):
     # Modelo com o objetivo de registrar usuarios em uma Tabela.
     usuario     = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Usuário') 
-    # variavel de um campo de relacionemto(OneToOneField) que define que cada registro /
-    # no modelo pode ter no maximo um relacionamento com outro registro em outro modelo.
+    # Relaciona os dois modelos em um só.
     idade       = models.PositiveIntegerField()
     data_nasc   = models.DateField()
-    # VAriavel de um campo que armazena informações de data.
     cpf         = models.CharField(max_length=11)
     endereco    = models.CharField(max_length=50)
     numero      = models.CharField(max_length=5)

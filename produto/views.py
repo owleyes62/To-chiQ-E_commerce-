@@ -8,10 +8,10 @@ from . import models
 
 class ListaProdutos(ListView):
     #classe de visualização baseada em django para exibir uma lista de produtos.
-    model = models.Produto # Especifica de qual modelo(Produto) sera exibido os produtos
-    template_name = 'produto/lista.html' # Especifica o modelo uilizado para renderizar a visualização
-    context_object_name = 'produtos' # Define o nome da variável que será usada para apresentar a lista de produtos no template
-    paginate_by = 3 # Define quantos produtos seram exibidos por pagina
+    model = models.Produto 
+    template_name = 'produto/lista.html' 
+    context_object_name = 'produtos' 
+    paginate_by = 3 
     
 class DetalheProduto(DetailView):
     #classe de visualização baseada em django para exibir os detalhes de um produto especifico.

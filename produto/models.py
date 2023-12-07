@@ -8,25 +8,20 @@ import os
 
 
 class Produto(models.Model):
-# classe referente aos modelos de Django(models.Model), que cria uma tabela no banco de dados.
 # Modelo com objetivo de resgistrar produtos da tabela
     name           = models.CharField(max_length = 255) 
-    # Variavel de um campo que armazenara Strings(CharField) com quantidade predefinida
     des_curta      = models.TextField(max_length = 255)
-    # Variavel de um campo que armazenara Stings de quantidade variaveda(TextField)
     des_longa      = models.TextField()
-    imagem         = models.ImageField(upload_to = 'Produto_image/%y/%m/', blank = True, null = True)
-    # Variavel de um campo que armazenara imagens, em um  diretorio nomeado(upload_to). OBS:se n existir sera criado.
-    # onde o campo é opçonal(blank) e nulo(Null)
-    slug           = models.SlugField(unique = True, blank = True, null = True  )
-    # Variavel de um campo que armazenara um identificador unico para a URL do produto
+    imagem         = models.ImageField(upload_to = 'Produto_image/%y/%m/', 
+                                       blank = True, null = True)
+    # Variavel de um campo que armazenara imagens, em um  diretorio nomeado(upload_to).
+    slug           = models.SlugField(unique = True, 
+                                      blank = True, null = True  ) # URL ddo produto
     pre_marke      = models.FloatField()
-    # Variavel de um campo que aceitara somente numeros e os transformara em decimais
-    pre_marke_prom = models.FloatField() # (default = 0)
+    pre_marke_prom = models.FloatField()
     tipo           = models.CharField(default = 'v',max_length = 1,choices =(
                                         ('V', 'Variavel'),('S', 'Simples' ),))
-    # Variavel de um campo que armazenara Strings(CharField) com um quantidade predefinida, 
-    # que forneçera duas opções(choice) com uma sendo ja pré definida(Default) e com o quantidade especifica(max_length)
+    # Forneçera duas opções(choice) com uma sendo ja pré definida(Default) e com o quantidade especifica(max_length)
     
     def image_tag_path(self): # Define o tamanho da imagem ná área admin 
         return mark_safe('<img src= "%s" width="100" height="80"/>' % (self.imagem.url))
@@ -42,25 +37,22 @@ class Produto(models.Model):
 
     @staticmethod
     def resize_image(img, new_width=800):
-    # função que realiza a redimensão da imagem escolhida(img) para o produto, definido uma largura padrão(new_width)
-        img_full_path = os.path.join(settings.MEDIA_ROOT, img.name)
-        # Variavel com o Caminho da imagem(MEDIA_ROOT) escolhida(img)
-        img_pil       = Image.open(img_full_path)
-        # Variavel abriando a imagem(open)        
+    # Função que realiza a redimensão da imagem escolhida(img) para o produto, definido uma largura padrão(new_width)
+        img_full_path = os.path.join(settings.MEDIA_ROOT, img.name) # Caminho da imagem
+        img_pil       = Image.open(img_full_path) # abre a imagem      
         original_width, original_height = img_pil.size
 
         if original_width <= new_width:
-            # Se a imagem original for menor ou igual que a largura definida(new_width) não ouvera redimensionamento
+            # Se a imagem original for menor ou igual a largura definida(new_width) não ouvera alteração
             img_pil.close()    
             return
         
         new_height = round((new_width * original_height) / original_width)
-        # Variavel com calculo envolvendo regra de 3 para achar a nova altura da imagem
+        # Calcula a nova altura da imagem usando regra de 3 
         new_img    = img_pil.resize((new_width, new_height), Image.LANCZOS)
-        # Variavel realizando a redimensão da imagem por meio de um calculo matematico(LANCZOS) 
-        # para diminuir a iamgem em termo de pixie
+        # raliza a redimensão da imagem por meio de um calculo matematico(LANCZOS) 
         new_img.save(img_full_path, optimize=True, quality=50)
-        # Realizando o salvamento(save) da nova imagem encima da antiga, habilitando a otimização(optimize) e definindo um gualidade de 50%
+        # Realizando o salvamento(save) da nova imagem encima da antiga.
 
 
     
@@ -82,23 +74,30 @@ class Produto(models.Model):
         if self.imagem:
             self.resize_image(self.imagem, max_image_size)
 
-    def __str__(self): # mostra o nome do produto na lista de produtos no admin
+    def __str__(self): # mostra o nome do produto na área admin
         return self.name
 
 class Variacao(models.Model):
-    # Modelo com o objetivo de registrar varações do mesmo produto, esta ligada diretamente ao modelo produto.
+    # Modelo com o objetivo de registrar varações do mesmo produto, 
+    # esta ligada diretamente ao modelo produto.
     produto  = models.ForeignKey(Produto, on_delete=models.CASCADE)
-    # Variavel definida como uma chave estrangeira(ForeignKey) relacionada ao modelo produto(produto),
-    #e se o produto relaconado for deletedo todas as suas variações dessa classe(Variacao) serão excluidas(On_delete)
+    # Chave estrangeira(ForeignKey) relacionada ao modelo produto(produto).
     nome     = models.CharField(max_length=50, blank=True, null=True)
     preco    = models.FloatField()
     pre_prom = models.FloatField(default=0)
-    estoque  = models.PositiveIntegerField(default=1) 
-    # Variavel de um campo que armazenara numeros positivos(PositiveIntegerField) representados por produtos,
-    # e sempre tera que aver  pelomenos 1 produto(deafault) 
+    estoque  = models.PositiveIntegerField(default=1)
+    # Sempre tera que aver  pelomenos 1 produto(deafault) 
 
     def __str__(self):
         return self.nome or self.produto.nome
+    
+    def get_v_preco_formatado(self):    
+        return formata_preco(self.preco) # Função da pasta utils.f_produtos
+    get_v_preco_formatado.short_description = 'preço'
+
+    def get_v_preco_formatado_promo(self):    
+        return formata_preco(self.pre_prom) # Função da pasta utils.f_produtos
+    get_v_preco_formatado_promo.short_description = 'preço promo'
 
     class Meta:
         # realisa a mundaça do nome da classe dentro da area de admin
