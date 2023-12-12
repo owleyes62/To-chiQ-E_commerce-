@@ -1,0 +1,25 @@
+{% load static %}
+
+
+<h1>Olá</h1>
+<div id="carouselExampleFade" class="carousel slide carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#carouselExampleFade" data-slide-to="{{ forloop.counter0 }}" class="active"></li>
+        <li data-target="#carouselExampleFade" data-slide-to="{{ forloop.counter }}"></li>
+    </ol>
+    <div class="carousel-inner">
+        {% for banner in banners %}
+        <div class="carousel-item active">
+            <img src="/media/{{banner.imgs}}" height="400" class="d-block w-100" alt="...">
+        </div>
+        {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Próximo</span>
+    </button>
+</div>
