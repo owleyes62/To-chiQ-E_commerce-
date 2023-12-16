@@ -123,10 +123,16 @@ class SalvarPedido(View):
             )
         )
 
-class Lista(View):
-    def get(self, *args, **kwargs):
-        return HttpResponse('lista')
+class Detalhe(DispatchLoginRequiredMixin, DetailView):
+    model = Pedido
+    context_object_name = 'pedido'
+    template_name = 'pedido/detalhe.html'
+    pk_url_kwarg = 'pk'
 
-class Detalhe(View):
-    def get(self, *args, **kwargs):
-        return HttpResponse('detalhe')
+
+class Lista(DispatchLoginRequiredMixin, ListView):
+    model = Pedido
+    context_object_name = 'pedidos'
+    template_name = 'pedido/lista.html'
+    paginate_by = 10
+    ordering = ['-id']

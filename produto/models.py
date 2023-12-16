@@ -18,7 +18,7 @@ class Produto(models.Model):
     slug           = models.SlugField(unique = True, 
                                       blank = True, null = True  ) # URL ddo produto
     pre_marke      = models.FloatField()
-    pre_marke_prom = models.FloatField()
+    pre_marke_prom = models.FloatField(default = 0)
     tipo           = models.CharField(default = 'v',max_length = 1,choices =(
                                         ('V', 'Variavel'),('S', 'Simples' ),))
     # Forneçera duas opções(choice) com uma sendo ja pré definida(Default) e com o quantidade especifica(max_length)

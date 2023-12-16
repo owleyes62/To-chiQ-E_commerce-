@@ -14,12 +14,12 @@
 
             {% for produto in produtos %}
 
-            <div class="card shadow" style="width: 330px;">
+            <div class="card shadow" style="width: 330px; border: 2px solid #CD853F; border-radius: 10px;">
 
                 {% if produto.imagem %}
                 <a href=" {{ produto.slug }}">
                     <img class="card-img-top" src="{{ produto.imagem.url }}" alt="{{ produto.name }}"
-                        style="height: 250px;">
+                        style="height: 250px; border-radius: 8px;">
                 </a>
                 {% endif %}
 
