@@ -4,7 +4,6 @@ gunicorn-error-log
 __localcode
 /data/
 media
-.gitignore
 banner
 
 # Django #
