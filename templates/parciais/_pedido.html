@@ -1,5 +1,5 @@
 {% load static %}
-{% omfilters %}
+{% load omfilters %}
 
 <div class="row">
     <div class="col">
@@ -9,7 +9,7 @@
             <div class="col-lg-2 font-weight-bold">Número do pedido:</div>
             <div class="col-lg-4">{{ pedido.id }}</div>
             <div class="col-lg-2 font-weight-bold">Total a pagar:</div>
-            <div class="col-lg-4">{{ pedido.total|preco_formatado }}</div>
+            <div class="col-lg-4">{{ pedido.preco_t|preco_formatado }}</div>
 
             <div class="col-lg-2 font-weight-bold">QTD. Itens:</div>
             <div class="col-lg-4">{{ pedido.qtd_total }}</div>
