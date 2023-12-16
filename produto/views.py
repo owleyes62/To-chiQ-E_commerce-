@@ -5,6 +5,7 @@ from django.views import View
 from django.http import HttpResponse
 from django.contrib import messages
 from . import models
+from perfil.models import Perfil
 
 class ListaProdutos(ListView):
     #classe de visualização baseada em django para exibir uma lista de produtos.
@@ -175,9 +176,22 @@ class ResumoDaCompra(View):
         contexto = {
             'usuario' : self.request.user,
             'carrinho' : self.request.session['carrinho'],
-
         }
         
+        perfil = Perfil.objects.filter(usuario = self.request.user).exists()
+
+        if not perfil:
+            messages.error(
+                self.request,
+                'Usuario sem perfil.'
+            )
+
+        if not self.request.session.get('carrinho'):
+            messages.error(
+                self.request,
+                'Carrinho vazio.'
+            )
+
         return render(self.request, 'produto/resumodacompra.html', contexto)
 
 class Busca(View):
