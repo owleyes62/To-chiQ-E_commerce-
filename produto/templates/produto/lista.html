@@ -17,7 +17,7 @@
             <div class="card shadow" style="width: 330px; border: 2px solid #CD853F; border-radius: 10px;">
 
                 {% if produto.imagem %}
-                <a href=" {{ produto.slug }}">
+                <a href="{% url 'produto:detalhe' produto.slug %}">
                     <img class="card-img-top" src="{{ produto.imagem.url }}" alt="{{ produto.name }}"
                         style="height: 250px; border-radius: 8px;">
                 </a>
@@ -44,7 +44,7 @@
                     </div>
                 </div>
                 <div class="card-footer bg-transparent border-top-light-custom text-center">
-                    <a href="{{ produto.slug }}" class="btn btn-sm m-1 btn-block"
+                    <a href="{% url 'produto:detalhe' produto.slug %}" class="btn btn-sm m-1 btn-block"
                         style="background-color: #CD853F; border-color: #CD853F;">
                         <i class="fa fa-shopping-cart" aria-hidden="true"></i>
                         Comprar

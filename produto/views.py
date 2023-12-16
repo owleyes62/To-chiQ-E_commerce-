@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views import View
-from django.http import HttpResponse
 from django.contrib import messages
+from django.db.models import Q
 from . import models
 from perfil.models import Perfil
 
@@ -13,6 +13,7 @@ class ListaProdutos(ListView):
     template_name = 'produto/lista.html' 
     context_object_name = 'produtos' 
     paginate_by = 6 
+    ordering = ['-id']
     
 class DetalheProduto(DetailView):
     #classe de visualização baseada em django para exibir os detalhes de um produto especifico.
@@ -194,5 +195,21 @@ class ResumoDaCompra(View):
 
         return render(self.request, 'produto/resumodacompra.html', contexto)
 
-class Busca(View):
-    pass
+class Busca(ListaProdutos):
+    def get_queryset(self, *args, **kwargs):
+        termo = self.request.GET.get('termo') or self.request.session['termo']
+        qs = super().get_queryset(*args, **kwargs)
+
+        if not termo:
+            return qs
+
+        self.request.session['termo'] = termo
+
+        qs = qs.filter(
+            Q(name__icontains=termo) |
+            Q(des_curta__icontains=termo) |
+            Q(des_longa__icontains=termo)
+        )
+
+        self.request.session.save()
+        return qs
