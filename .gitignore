@@ -5,6 +5,7 @@ __localcode
 /data/
 media
 .gitignore
+banner
 
 # Django #
 *.log
